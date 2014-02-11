@@ -3,32 +3,34 @@ cd /host/ubuntu/songs
 # alias ls = ls -al --color
 # ls -R|grep .mp3$
 # echo "$(tput setaf 4)$(ls -R|grep .mp3$)$(tput sgr0)"
-mix[0]=" "
-mix[1]="-"
-c=1
-while [[ $c -lt 100 ]]; do
-	clear
-	x=$RANDOM%2
-	y=$RANDOM%2
-	z=$RANDOM%2
-	i=0
-	str1=""
-	str2=""
-	str3=""
-	while [[ $i -lt 34 ]]; do
-		str1="$str1${mix[$x]}${mix[$y]}${mix[$z]}"
-		str2="$str2${mix[$y]}${mix[$z]}${mix[$x]}"
-		str3="$str3${mix[$z]}${mix[$x]}${mix[$y]}"
-		i=$i+1
-	done
-	echo "$str1"
-	echo "$str2"
-	echo "$str3"
-	echo "$str1"
-	sleep 0.3
-	c=$c+1
-	#statements
-done
+
+# mix[0]=" "
+# mix[1]="-"
+# c=1
+# while [[ $c -lt 100 ]]; do
+# 	clear
+# 	x=$RANDOM%2
+# 	y=$RANDOM%2
+# 	z=$RANDOM%2
+# 	i=0
+# 	str1=""
+# 	str2=""
+# 	str3=""
+# 	while [[ $i -lt 34 ]]; do
+# 		str1="$str1${mix[$x]}${mix[$y]}${mix[$z]}"
+# 		str2="$str2${mix[$y]}${mix[$z]}${mix[$x]}"
+# 		str3="$str3${mix[$z]}${mix[$x]}${mix[$y]}"
+# 		i=$i+1
+# 	done
+# 	echo "$str1"
+# 	echo "$str2"
+# 	echo "$str3"
+# 	echo "$str1"
+# 	sleep 0.3
+# 	c=$c+1
+# 	#statements
+# done
+
 # FILE=`zenity --file-selection --multiple --filename=/host/ubuntu/songs/ --title="Select a File"`
 
 #         case $? in
@@ -45,14 +47,15 @@ done
 
 
 
-# IFS=@
-# for f in $(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select a File" --multiple --separator='@') ; do
-#         songname=`echo "$f" | awk -F"songs/" '{print $2}'`
-#         # zenity --info \
-#         #   --text="$(echo $(mpg123 -v $songname))"
+IFS=@
+for f in $(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select a File" --multiple --separator='@') ; do
+        songname=`echo "$f" | awk -F"songs/" '{print $2}'`
+        # zenity --info \
+        #   --text="$(echo $(mpg123 -v $songname))"
 
-#         # echo "-----" ; mpg123 -v $songname &
-# done
+        mpg123 -C $songname
+        
+done
 
 
 
