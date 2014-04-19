@@ -9,7 +9,7 @@
 int startx = 0;
 int starty = 0;
 
-char *choices[50];
+char choices[50][80];
 int n_choices,curr_song=-1;
 void print_menu(WINDOW *menu_win, int highlight);
 
@@ -37,7 +37,7 @@ FILE *fp;
    	buff = (char *)malloc(80*sizeof(char));
    fgets(buff,80,fp);
    // printw("%s", buff );
-   choices[z]=buff;
+   strcpy(choices[z],buff);
    // printw("%s",choices[z]);
    z++;
    }
@@ -109,7 +109,7 @@ break;
 
 /*--------------------------------------- SONG PLAYING START------------------------------------------------------*/
 
-if (choice  < n_choices-1) {
+if (choice < n_choices-1) {
 system("killall mpg123 2>/dev/null");
 i=0;j=0;
 while(choices[choice-1][j]!='\0')
@@ -120,7 +120,7 @@ while(choices[choice-1][j]!='\0')
 		commandsong[i]=choices[choice-1][j];
 	j++;i++;
 }i--;
-for(;i<100;i++)
+//for(;i<100;i++)
 	commandsong[i]='\0';
 // printw("%s",commandsong);
 // refresh();
@@ -133,7 +133,7 @@ song[i+29]=' ';
 i++;
 song[i+29]='&';
 i++;
-for(;i+29<100;i++)
+//for(;i+29<100;i++)
 	song[i+29]='\0';
 // printw("%s",song);
 system(song);
