@@ -4,15 +4,16 @@
 #include <string.h>
 
 #define WIDTH 30
-#define HEIGHT 10 
+#define HEIGHT 9 
 
 int startx = 0;
 int starty = 0;
 
-char choices[][10] = { 
+char choices[5][10] = { 
 			"Play",
 			"Pause",
 			"Stop",
+			"Playlist",
 			"Exit",
 		  };
 int n_choices = sizeof(choices) / sizeof(char *);
@@ -22,7 +23,7 @@ int main()
 {	WINDOW *menu_win;
 	int highlight = 1;
 	int choice = 0;
-	int c;
+	int c, row, col;
 	bool pause_id = false;
 	char pid[10];
 	char pause[20];
@@ -32,14 +33,20 @@ int main()
 	clear();
 	noecho();
 	cbreak();	/* Line buffering disabled. pass on everything */
+	start_color();
+	init_pair(1, 4, 0);
 	startx = (80 - WIDTH) / 2;
 	starty = (24 - HEIGHT) / 2;
+	getmaxyx(stdscr,row,col);
 		
-	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
+	player: menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
-	mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
+	attron(COLOR_PAIR(1) | A_BOLD);
+	mvprintw(0, (col-70)/2 , "----- Welcome to Fast & Light Console-based (FaLiC) Media Player -----");
+	attroff(COLOR_PAIR(1) | A_BOLD);
+	mvprintw(3, 0, "Use arrow keys to go up and down, Press enter to select a choice");
 	refresh();
-	player: print_menu(menu_win, highlight);
+	print_menu(menu_win, highlight);
 	while(1)
 	{	c = wgetch(menu_win);
 		switch(c)
@@ -102,6 +109,13 @@ int main()
 	}
 	else if (choice == 3) {
 		system("killall mpg123");
+		choice = 0;
+		goto player;
+	}
+	else if (choice == 4) {
+		system("./playlist");
+		clear();
+		refresh();
 		choice = 0;
 		goto player;
 	}
