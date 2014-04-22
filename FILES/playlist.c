@@ -9,87 +9,94 @@
 int startx = 0;
 int starty = 0;
 
-char choices[50][80];
+char npchoices[6][20] = {
+"Add Songs",
+"Pause",
+"Stop",
+"Next",
+"Save Playlist",
+"Main Menu",
+};
+int npn_choices = sizeof(npchoices) / sizeof(char *);
+int row,col;
+char choices[50][200];
 int n_choices,curr_song=-1;
-void print_menu(WINDOW *menu_win, int highlight);
+void print_menu(WINDOW *menu_win, int highlight, int nphighlight);
 
-void play_song(int item) {
+void play_song() {
 	int i=0,j=0;
-	char song[100]="mpg123 -q /host/ubuntu/songs/";
-	char commandsong[100];
+	char song[210]="mpg123 -q ";
+	char commandsong[200];
 	system("killall mpg123 2>/dev/null");
-	while(choices[item][j]!='\0') {
-		if (choices[item][j] == ' ' || choices[item][j] == '(' || choices[item][j] == ')' || choices[item][j] == '\'')
-			{commandsong[i++]='\\';commandsong[i]=choices[item][j];}
+	while(choices[curr_song][j]!='\0') {
+		if (choices[curr_song][j] == ' ' || choices[curr_song][j] == '(' || choices[curr_song][j] == ')' || choices[curr_song][j] == '\'')
+			{commandsong[i++]='\\';commandsong[i]=choices[curr_song][j];}
 		else
-			commandsong[i]=choices[item][j];
-		j++;i++;
+			commandsong[i]=choices[curr_song][j];
+		j++;
+		i++;
 	}i--;
-	//for(;i<100;i++)
+	for(;i<200;i++)
 		commandsong[i]='\0';
-	// printw("%s",commandsong);
-	// refresh();
-	// strcat(song,commandsong);
 	for(i=0;i<strlen(commandsong);i++)
 	{
-		song[i+29]=commandsong[i];
+		song[i+10]=commandsong[i];
 	}
-	song[i+29]=' ';
+	song[i+10]=' ';
 	i++;
-	song[i+29]='&';
+	song[i+10]='&';
 	i++;
-	//for(;i+29<100;i++)
-		song[i+29]='\0';
-	// printw("%s",song);
+	for(;i+10<200;i++)
+		song[i+10]='\0';
 	system(song);
 }
 
 int main() {	
 WINDOW *menu_win;
-int highlight = 1;
-int choice = -1;
+int highlight = 1,nphighlight=1;
+int choice = -1,npchoice = 0;
 int c=-1,z=0,i=0,j=0;
 int inst;
 char *line;
 char *buff;
 char read;
-// int z=0;
+bool pause_id = false, stop_id = false;
+char pid[10];
+char pause[21];
 /////////////////////////////////////////////////// FILE START ///////////////////////////////////////////////////////////
-FILE *fp, *pstat;
+FILE *fp, *pstat, *f;
    
-   // char *choices[80];
-   // char *s = "exit";
-   
-   fp = fopen("text.txt", "r");
-   while(!feof(fp))
-   {
-   	buff = (char *)malloc(80*sizeof(char));
-   fgets(buff,80,fp);
-   // printw("%s", buff );
-   strcpy(choices[z],buff);
-   // printw("%s",choices[z]);
-   z++;
-   }
-   // printw("%s %d",choices[z],z);
-   n_choices = z;
-   fclose(fp);
+start: 
+z=0;
+fp = fopen("currentplay.txt", "r");
+while(!feof(fp)) {
+	buff = (char *)malloc(200*sizeof(char));
+	fgets(buff,150,fp);
+	strcpy(choices[z], buff);
+	z++;
+}
+n_choices = z;
+fclose(fp);
 /////////////////////////////////////////////////// FILE END /////////////////////////////////////////////////////////////
 initscr();
 clear();
 noecho();
-start_color();
-init_pair(1,4,0);
-//halfdelay(1);
 //cbreak();	/* Line buffering disabled. pass on everything */
 startx = (80 - WIDTH) / 2;
 starty = (24 - HEIGHT) / 2;
+getmaxyx(stdscr,row,col);
 menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 keypad(menu_win, TRUE);
+
+/////////////////////////////////////////////////////////// PAINT BLACK //////////////////////////////////////////////////
+start_color();
+init_pair(2,COLOR_WHITE,COLOR_BLACK);
+////////////////////////////////////////////////////////// PAINT BLACK ///////////////////////////////////////////////////
 
 wtimeout(menu_win, 500);
 mvprintw(0, 0, "Use arrow keys to go up and down, Press enter to select a choice");
 refresh();
-p: print_menu(menu_win, highlight);
+p: print_menu(menu_win, highlight, nphighlight);
 /*************************************************************************************************************/
 while(1) {	
 	c = wgetch(menu_win);
@@ -97,10 +104,11 @@ while(1) {
 	{	
 		case -1: 		pstat = popen("ps -ewwo args | grep -c mpg123", "r");
 						fscanf(pstat, "%d", &inst);
-						if (inst == 2){
+						if (inst == 2 && !stop_id){
 							if(curr_song < n_choices-3){
 								curr_song++;
-								play_song(curr_song);
+								play_song();
+								stop_id = false;
 								goto p;
 							}
 						}
@@ -117,15 +125,25 @@ while(1) {
 						else
 						++highlight;
 						break;
+		case KEY_RIGHT:	if (nphighlight == npn_choices)
+							nphighlight = 1;
+						else
+							nphighlight++;
+						break;
+		case KEY_LEFT:	if (nphighlight == 1)
+							nphighlight = npn_choices;
+						else
+							nphighlight--;
+						break;
 		case 10:	choice = highlight;
 					break;
-		default:	//mvprintw(24, 0, "Characte/r pressed is = %3d Hopefully it can be printed as '%c'", c, c);
-					//getch();
-					refresh();
+		case 32:	npchoice = nphighlight;
+					break;
+		default:	refresh();
 					break;
 	}
-	print_menu(menu_win, highlight);
-	if(choice != -1)	/* User did a choice come out of the infinite loop */
+	print_menu(menu_win, highlight, nphighlight);
+	if(choice != -1 || npchoice !=0)	/* User did a choice come out of the infinite loop */
 	break;
 }
 /*************************************************************************************************************/	
@@ -133,23 +151,83 @@ while(1) {
 
 /*--------------------------------------- SONG PLAYING STARTS----------------------------------------------------*/
 
-if (choice < n_choices-1) {
+if (choice != -1) {
 	curr_song = choice-1;
-	play_song(curr_song);
+	play_song();
+	stop_id = false;
 	choice=-1;
 	goto p;
 }
 
 /*--------------------------------------- SONG PLAYING ENDS------------------------------------------------------*/
 
-else if (choice == n_choices-1) {
-	// system("killall mpg123 2>/dev/null");
-	clear();
-	choice=-1;
-	return 0;
+else {
+	if (npchoice == 1)
+	{
+		system("./AddSongs.sh");
+		npchoice =0;
+		goto start;
+	}
+	else if (npchoice == 2)
+	{
+			f = popen("pidof mpg123", "r");
+			if (f==NULL){
+				printf("No song to pause!");
+			}
+			else {
+				fgets(pid, 10, f);
+				if (!pause_id){
+					sprintf(pause, "kill -STOP %s", pid);
+					strcpy(npchoices[1], "Resume");
+					system(pause);
+					pause_id = true;
+				}
+				else {
+					sprintf(pause, "kill -CONT %s", pid);
+					strcpy(npchoices[1], "Pause ");	
+					system(pause);
+					pause_id = false;
+				}
+				pclose(f);
+				npchoice = 0;
+				clear();
+				refresh();
+				goto p;
+			}
+	}
+	else if (npchoice == 3)
+	{
+		system("killall mpg123 2>/dev/null");
+		npchoice=0;
+		stop_id = true;
+		curr_song = -1;
+		goto p;
+	}
+	else if (npchoice == 4)
+	{
+		if (curr_song == n_choices-2)
+			curr_song = 0;
+		else
+			curr_song++;
+
+		npchoice = 0;
+		play_song();
+		stop_id = false;
+		goto p;
+	}
+	else if (npchoice == 5)
+	{
+		system("./SavePlaylist.sh");
+		npchoice =0;
+		goto p;
+	}
+	else if (npchoice == 7)
+	{
+		clear();
+		choice = -1;
+		return 0;
+	}
 }
-// mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
-// getch();
 clrtoeol();
 refresh();
 endwin();
@@ -157,40 +235,72 @@ return 0;
 }
 
 
-void print_menu(WINDOW *menu_win, int highlight) {
-	int x, y, i=0;	
-
-	x = 2;
+void print_menu(WINDOW *menu_win, int highlight, int nphighlight)
+{
+	int x, y, i=0,z=0,start;
+	char name[200];
+	x = 0;
 	y = 2;
-	// box(menu_win, 0, 0);
 	for(i=0;i<n_choices;i++)
 	{	
 		start_color();
 		init_pair(1,COLOR_CYAN, COLOR_BLACK);
+		for (z=0;z<strlen(choices[i]);z++)
+		{
+			if (choices[i][z]=='/')
+				start =z+1;
+		}
+		for(z=0;z<200;z++)
+		{
+			while(choices[i][z]!='\0')
+			{
+				name[z]=choices[i][start++];
+				z++;
+			}
+			name[z]='\0';
+		}
 		if(i == curr_song)  /* High light the present choice */
 		{	
 			if(highlight != i+1)
 			{
-			wattron(menu_win, A_BOLD | COLOR_PAIR(1));
-			mvwprintw(menu_win, y, 0, "> %s",choices[i]);
-			wattroff(menu_win, A_BOLD | COLOR_PAIR(1));
+				wattron(menu_win, A_BOLD | COLOR_PAIR(1));
+				mvwprintw(menu_win, y, 0, "> %s",name);
+				wattroff(menu_win, A_BOLD | COLOR_PAIR(1));
 			}
 			else
 			{
 				wattron(menu_win, A_BOLD | A_REVERSE | COLOR_PAIR(1));
-				mvwprintw(menu_win, y, 0, "> %s",choices[i]);
+				mvwprintw(menu_win, y, 0, "> %s",name);
 				wattroff(menu_win, A_BOLD | A_REVERSE | COLOR_PAIR(1));
 			}
+
 		}
 		else if (highlight == i+1)
 		{
 			wattron(menu_win, A_REVERSE);
-			mvwprintw(menu_win, y, 0, "  %s", choices[i]);
+			mvwprintw(menu_win, y, 0, "  %s", name);
 			wattroff(menu_win, A_REVERSE);
 		}
 		else
-			mvwprintw(menu_win, y, 0, "  %s", choices[i]);
-			++y;
+				mvwprintw(menu_win, y, 0, "  %s", name);
+		++y;
+	}
+	y+=6;
+	for(i = 0; i < npn_choices; ++i)
+	{	
+		if (i>0)
+		{
+			x += strlen(npchoices[i-1])+2;
+		}
+		if(nphighlight == i + 1) /* High light the present choice */
+		{	
+			wattron(menu_win, A_REVERSE);
+			mvwprintw(menu_win,y,x, "%s", npchoices[i]);
+			wattroff(menu_win, A_REVERSE);
+		}
+		else
+			mvwprintw(menu_win,y,x, "%s", npchoices[i]);
+
 	}
 	wrefresh(menu_win);
 }

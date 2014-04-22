@@ -1,4 +1,3 @@
-#!/bin/bash
 cd /host/ubuntu/songs
 # alias ls = ls -al --color
 # ls -R|grep .mp3$
@@ -47,16 +46,14 @@ cd /host/ubuntu/songs
 
 
 
-IFS=@
-for f in $(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select a File" --multiple --separator='@') ; do
-        songname=`echo "$f" | awk -F"songs/" '{print $2}'`
-        # zenity --info \
-        #   --text="$(echo $(mpg123 -v $songname))"
-
-        mpg123 -C $songname
-        
+IFS=%
+list=$(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='%')
+:>'/home/ashish/Desktop/Music_Player/FILES/currentplay.txt'
+for f in  $list; do
+        # songname=`echo "$f" | awk -F"songs/" '{print $2}'`
+        echo "$f" >> '/home/ashish/Desktop/Music_Player/FILES/currentplay.txt'
 done
-
+# mpg123 -Zq $list
 
 
 
@@ -87,11 +84,3 @@ done
 # 	read song
 # fi
 # done
-
-
-
-
-
-
-
-

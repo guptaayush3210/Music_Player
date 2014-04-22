@@ -9,11 +9,10 @@
 int startx = 0;
 int starty = 0;
 
-char choices[5][10] = { 
+char choices[4][20] = { 
 			"Play",
-			"Pause",
-			"Stop",
-			"Playlist",
+			"Recently Played",
+			"Playlists",
 			"Exit",
 		  };
 int n_choices = sizeof(choices) / sizeof(char *);
@@ -66,8 +65,6 @@ int main()
 				choice = highlight;
 				break;
 			default:
-				//mvprintw(24, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", c, c);
-				//getch();
 				refresh();
 				break;
 		}
@@ -76,7 +73,7 @@ int main()
 			break;
 	}	
 	if (choice == 1) {
-		system("./mp3.sh");
+		system("./CreatePlaylist.sh");
 		system("./playlist");
 		clear();
 		refresh();
@@ -84,43 +81,23 @@ int main()
 		goto player;
 	}
 	else if (choice == 2) {
-		fp = popen("pidof mpg123", "r");
-		if (fp==NULL){
-			printf("No song to pause!");
-		}
-		else {	
-			fgets(pid, 10, fp);
-			if (!pause_id){
-				sprintf(pause, "kill -STOP %s", pid);
-				strcpy(choices[1], "Resume");
-				system(pause);
-				pause_id = true;
-			}
-			else {
-				sprintf(pause, "kill -CONT %s", pid);
-				strcpy(choices[1], "Pause");	
-				system(pause);
-				pause_id = false;
-			}
-			choice = 0;
-			goto player;
-		}
-		pclose(fp);
-	}
-	else if (choice == 3) {
-		system("killall mpg123");
-		choice = 0;
-		goto player;
-	}
-	else if (choice == 4) {
 		system("./playlist");
 		clear();
 		refresh();
 		choice = 0;
 		goto player;
 	}
-	//mvprintw(23, 0, "You chose choice %d with choice string %s\n", choice, choices[choice - 1]);
-	//getch();
+	else if (choice == 3)
+	{
+		system("cp $(zenity --file-selection --title=\"Select Playlist\" --filename=/home/ashish/Desktop/Music_Player/FILES/Playlists) currentplay.txt");
+		system("./playlist");
+		choice=0;
+		goto player;
+	}
+	else
+	{
+		system("killall mpg123 2>/dev/null");
+	}
 	clrtoeol();
 	refresh();
 	endwin();
