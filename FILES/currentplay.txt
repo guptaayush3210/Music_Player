@@ -1,6 +1,10 @@
-/host/ubuntu/songs/Akcent - Love Stoned.mp3
-/host/ubuntu/songs/Akcent - Stay With Me.mp3
-/host/ubuntu/songs/avicii wake me up .mp3
-/host/ubuntu/songs/calvin harris i need your love.mp3
 /host/ubuntu/songs/Dexy's Midnight Runners- Come on Eileen.mp3
-/host/ubuntu/songs/Drake-Hold-On-Were-Going-Home-BlackInkInprint.mp3
+/host/ubuntu/songs/Have A Heart - Mixdown MASTERED EDIT.mp3
+/host/ubuntu/songs/justin timberlake - not a bad thing.mp3
+/host/ubuntu/songs/lindsey stirling crystallize.mp3
+/host/ubuntu/songs/maroon 5 love somebody.mp3
+/host/ubuntu/songs/Paradise Valley - Who You Love (ft Katy Perry).mp3
+/host/ubuntu/songs/p!nk feat. nate ruess   just give me a reason .mp3
+/host/ubuntu/songs/Akcent - Stay With Me.mp3
+/host/ubuntu/songs/calvin harris i need your love.mp3
+/host/ubuntu/songs/Let her go passenger.mp3

@@ -18,7 +18,7 @@ char *npchoices[] = {
 "Main Menu",
 };
 int npn_choices = sizeof(npchoices) / sizeof(char *);
-
+int row,col;
 char *choices[50];
 int n_choices,curr_song=-1;
 void print_menu(WINDOW *menu_win, int highlight, int nphighlight);
@@ -39,7 +39,9 @@ char pause[20];
 FILE *f;
 /////////////////////////////////////////////////// FILE START ///////////////////////////////////////////////////////////
  FILE *fp;   
-   start: fp = fopen("currentplay.txt", "r");
+   start: 
+   z=0;
+   fp = fopen("currentplay.txt", "r");
    while(!feof(fp))
    {
    	buff = (char *)malloc(200*sizeof(char));
@@ -56,6 +58,7 @@ noecho();
 cbreak();	/* Line buffering disabled. pass on everything */
 startx = (80 - WIDTH) / 2;
 starty = (24 - HEIGHT) / 2;
+getmaxyx(stdscr,row,col);
 menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 keypad(menu_win, TRUE);
 
@@ -64,6 +67,7 @@ start_color();
 init_pair(2,COLOR_WHITE,COLOR_BLACK);
 ////////////////////////////////////////////////////////// PAINT BLACK //////////////////////////////////////////////////
 mvprintw(0, 0, "Use arrow keys to go up and down, left and right, Press enter to select a song and space to selct lower menu choice.");
+// mvprintw(1, 0, "%d %d",row,col);
 refresh();
 p:
 print_menu(menu_win, highlight, nphighlight);
@@ -250,8 +254,7 @@ void print_menu(WINDOW *menu_win, int highlight, int nphighlight)
 				mvwprintw(menu_win, y, 0, "  %s", name);
 		++y;
 	}
-	y+=5;
-
+	y+=6;
 	for(i = 0; i < npn_choices; ++i)
 	{	
 		if (i>0)
