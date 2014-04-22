@@ -47,15 +47,14 @@ cd /host/ubuntu/songs
 
 
 
-IFS=@
-list=$(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='@')
-:>'/home/ayush/Linux_Project/text.txt'
+IFS=%
+list=$(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='%')
+:>'/home/ayush/Linux_Project/FILES/currentplay.txt'
 for f in  $list; do
-        songname=`echo "$f" | awk -F"songs/" '{print $2}'`
-        echo "$songname" >> '/home/ayush/Linux_Project/text.txt'
+        # songname=`echo "$f" | awk -F"songs/" '{print $2}'`
+        echo "$f" >> '/home/ayush/Linux_Project/FILES/currentplay.txt'
         
 done
-echo "Main Menu" >> '/home/ayush/Linux_Project/text.txt'
 # mpg123 -Zq $list
 
 
