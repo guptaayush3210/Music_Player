@@ -1,7 +1,5 @@
-/host/ubuntu/songs/John Mayer/01. John Mayer - Free Fallin' (Live Cover).mp3
-/host/ubuntu/songs/John Mayer/03. John Mayer - Gravity.mp3
-/host/ubuntu/songs/John Mayer/05. John Mayer - Who Says.mp3
-/host/ubuntu/songs/John Mayer/07. John Mayer - Stop This Train.mp3
-/host/ubuntu/songs/John Mayer/11. John Mayer - Your Body Is A Wonderland.mp3
-/host/ubuntu/songs/John Mayer/15. John Mayer - Half Of My Heart.mp3
-/host/ubuntu/songs/John Mayer/16. John Mayer - Waiting on the World to Change.mp3
+/host/ubuntu/songs/A Great Big World Ft. Christina Aguilera - Say Something.mp3
+/host/ubuntu/songs/Akcent - Love Stoned.mp3
+/host/ubuntu/songs/Akcent - Stay With Me.mp3
+/host/ubuntu/songs/Have A Heart - Mixdown MASTERED EDIT.mp3
+/host/ubuntu/songs/justin timberlake - not a bad thing.mp3

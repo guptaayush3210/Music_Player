@@ -48,10 +48,10 @@ cd /host/ubuntu/songs
 
 IFS=%
 list=$(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='%')
-:>'/home/ashish/Desktop/Music_Player/FILES/currentplay.txt'
+:>'/home/ayush/Desktop/Music_Player/FILES/currentplay.pl'
 for f in  $list; do
         # songname=`echo "$f" | awk -F"songs/" '{print $2}'`
-        echo "$f" >> '/home/ashish/Desktop/Music_Player/FILES/currentplay.txt'
+        echo "$f" >> '/home/ayush/Desktop/Music_Player/FILES/currentplay.pl'
 done
 # mpg123 -Zq $list
 

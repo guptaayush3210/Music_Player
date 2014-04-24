@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define WIDTH 30
-#define HEIGHT 9 
+#define HEIGHT 6
 
 int startx = 0;
 int starty = 0;
@@ -12,10 +12,10 @@ int starty = 0;
 char choices[4][20] = { 
 			"Play",
 			"Recently Played",
-			"Playlists",
+			"Saved Playlists",
 			"Exit",
 		  };
-int n_choices = sizeof(choices) / sizeof(char *);
+int n_choices = 4;
 void print_menu(WINDOW *menu_win, int highlight);
 
 int main()
@@ -89,7 +89,7 @@ int main()
 	}
 	else if (choice == 3)
 	{
-		system("cp $(zenity --file-selection --title=\"Select Playlist\" --filename=/home/ashish/Desktop/Music_Player/FILES/Playlists) currentplay.txt");
+		system("cp $(zenity --file-selection --title=\"Select Playlist\" --filename=/home/ayush/Desktop/Music_Player/FILES/Playlists/) currentplay.pl");
 		system("./playlist");
 		choice=0;
 		goto player;
@@ -110,7 +110,7 @@ void print_menu(WINDOW *menu_win, int highlight)
 	int x, y, i;	
 
 	x = 2;
-	y = 2;
+	y = 1;
 	box(menu_win, 0, 0);
 	for(i = 0; i < n_choices; ++i)
 	{	if(highlight == i + 1) /* High light the present choice */

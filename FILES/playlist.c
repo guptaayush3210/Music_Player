@@ -9,15 +9,16 @@
 int startx = 0;
 int starty = 0;
 
-char npchoices[6][20] = {
+char npchoices[7][20] = {
 "Add Songs",
-"Pause",
+"Pause ",
 "Stop",
 "Next",
+"Repeat ON ",
 "Save Playlist",
 "Main Menu",
 };
-int npn_choices = sizeof(npchoices) / sizeof(char *);
+int npn_choices = 7;
 int row,col;
 char choices[50][200];
 int n_choices,curr_song=-1;
@@ -60,7 +61,7 @@ int inst;
 char *line;
 char *buff;
 char read;
-bool pause_id = false, stop_id = false;
+bool pause_id = false, stop_id = false,repeat = false;
 char pid[10];
 char pause[21];
 /////////////////////////////////////////////////// FILE START ///////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ FILE *fp, *pstat, *f;
    
 start: 
 z=0;
-fp = fopen("currentplay.txt", "r");
+fp = fopen("currentplay.pl", "r");
 while(!feof(fp)) {
 	buff = (char *)malloc(200*sizeof(char));
 	fgets(buff,150,fp);
@@ -107,6 +108,13 @@ while(1) {
 						if (inst == 2 && !stop_id){
 							if(curr_song < n_choices-3){
 								curr_song++;
+								play_song();
+								stop_id = false;
+								goto p;
+							}
+							else if (repeat)
+							{
+								curr_song = 0;
 								play_song();
 								stop_id = false;
 								goto p;
@@ -217,12 +225,20 @@ else {
 	}
 	else if (npchoice == 5)
 	{
+		repeat = true;
+		sprintf(npchoices[4],"Repeat OFF");
+		npchoice =0;
+		goto p;
+	}
+	else if (npchoice == 6)
+	{
 		system("./SavePlaylist.sh");
 		npchoice =0;
 		goto p;
 	}
 	else if (npchoice == 7)
 	{
+		system("killall mpg123 2>/dev/null");
 		clear();
 		choice = -1;
 		return 0;
@@ -237,11 +253,20 @@ return 0;
 
 void print_menu(WINDOW *menu_win, int highlight, int nphighlight)
 {
-	int x, y, i=0,z=0,start;
+	int x, y, i=0,z=0,start,start_point,end_point,tens;
 	char name[200];
 	x = 0;
 	y = 2;
-	for(i=0;i<n_choices;i++)
+	wclear(menu_win);
+	wrefresh(menu_win);
+	tens = (highlight-1)/10;
+	start_point = tens*10;
+	if (start_point+10 <= n_choices-1)
+		{end_point = start_point+10;}
+	else
+		{end_point = n_choices-1;}
+
+	for(i=start_point;i<end_point;i++)
 	{	
 		start_color();
 		init_pair(1,COLOR_CYAN, COLOR_BLACK);
@@ -264,13 +289,13 @@ void print_menu(WINDOW *menu_win, int highlight, int nphighlight)
 			if(highlight != i+1)
 			{
 				wattron(menu_win, A_BOLD | COLOR_PAIR(1));
-				mvwprintw(menu_win, y, 0, "> %s",name);
+				mvwprintw(menu_win, y, 0, ">>   %s",name);
 				wattroff(menu_win, A_BOLD | COLOR_PAIR(1));
 			}
 			else
 			{
 				wattron(menu_win, A_BOLD | A_REVERSE | COLOR_PAIR(1));
-				mvwprintw(menu_win, y, 0, "> %s",name);
+				mvwprintw(menu_win, y, 0, ">>   %s",name);
 				wattroff(menu_win, A_BOLD | A_REVERSE | COLOR_PAIR(1));
 			}
 
@@ -278,14 +303,14 @@ void print_menu(WINDOW *menu_win, int highlight, int nphighlight)
 		else if (highlight == i+1)
 		{
 			wattron(menu_win, A_REVERSE);
-			mvwprintw(menu_win, y, 0, "  %s", name);
+			mvwprintw(menu_win, y, 0, "%.2d   %s",i+1, name);
 			wattroff(menu_win, A_REVERSE);
 		}
 		else
-				mvwprintw(menu_win, y, 0, "  %s", name);
+				mvwprintw(menu_win, y, 0, "%.2d   %s",i+1, name);
 		++y;
 	}
-	y+=6;
+	y=16;
 	for(i = 0; i < npn_choices; ++i)
 	{	
 		if (i>0)
