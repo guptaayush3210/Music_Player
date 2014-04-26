@@ -89,7 +89,7 @@ int main()
 	}
 	else if (choice == 3)
 	{
-		system("cp $(zenity --file-selection --title=\"Select Playlist\" --filename=/home/ayush/Desktop/Music_Player/FILES/Playlists/) currentplay.pl");
+		system("cp $(zenity --file-selection --title=\"Select Playlist\" --filename=/home/ashish/Desktop/Music_Player/FILES/Playlists/) currentplay.pl");
 		system("./playlist");
 		choice=0;
 		goto player;

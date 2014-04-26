@@ -2,23 +2,25 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <string.h>
+#include <time.h>
 #define _GNU_SOURCE
-#define WIDTH 70
+#define WIDTH 90
 #define HEIGHT 20
 
 int startx = 0;
 int starty = 0;
 
-char npchoices[7][20] = {
+char npchoices[8][20] = {
 "Add Songs",
 "Pause ",
 "Stop",
 "Next",
 "Repeat ON ",
+"Shuffle ON ",
 "Save Playlist",
 "Main Menu",
 };
-int npn_choices = 7;
+int npn_choices = 8;
 int row,col;
 char choices[50][200];
 int n_choices,curr_song=-1;
@@ -61,7 +63,7 @@ int inst;
 char *line;
 char *buff;
 char read;
-bool pause_id = false, stop_id = false,repeat = false;
+bool pause_id = false, stop_id = false,repeat = false, shuffle = false;
 char pid[10];
 char pause[21];
 /////////////////////////////////////////////////// FILE START ///////////////////////////////////////////////////////////
@@ -82,8 +84,9 @@ fclose(fp);
 initscr();
 clear();
 noecho();
+srand(time(NULL));
 //cbreak();	/* Line buffering disabled. pass on everything */
-startx = (80 - WIDTH) / 2;
+startx = (100 - WIDTH) / 2;
 starty = (24 - HEIGHT) / 2;
 getmaxyx(stdscr,row,col);
 menu_win = newwin(HEIGHT, WIDTH, starty, startx);
@@ -106,17 +109,20 @@ while(1) {
 		case -1: 		pstat = popen("ps -ewwo args | grep -c mpg123", "r");
 						fscanf(pstat, "%d", &inst);
 						if (inst == 2 && !stop_id){
-							if(curr_song < n_choices-3){
+							if(shuffle){
+								curr_song = rand()%(n_choices-2);
+								play_song();
+								goto p;
+							}
+							else if(curr_song < n_choices-2){
 								curr_song++;
 								play_song();
-								stop_id = false;
 								goto p;
 							}
 							else if (repeat)
 							{
 								curr_song = 0;
 								play_song();
-								stop_id = false;
 								goto p;
 							}
 						}
@@ -213,11 +219,14 @@ else {
 	}
 	else if (npchoice == 4)
 	{
-		if (curr_song == n_choices-2)
-			curr_song = 0;
-		else
-			curr_song++;
-
+		if (shuffle)
+			curr_song = rand()%(n_choices-2);
+		else{
+			if (curr_song == n_choices-2)
+				curr_song = 0;
+			else
+				curr_song++;
+		}
 		npchoice = 0;
 		play_song();
 		stop_id = false;
@@ -225,18 +234,37 @@ else {
 	}
 	else if (npchoice == 5)
 	{
-		repeat = true;
-		sprintf(npchoices[4],"Repeat OFF");
+		if(!repeat){	
+			repeat = true;
+			sprintf(npchoices[4],"Repeat OFF");
+		}
+		else {
+			repeat = false;
+			sprintf(npchoices[4],"Repeat ON ");
+		}
 		npchoice =0;
 		goto p;
 	}
 	else if (npchoice == 6)
 	{
-		system("./SavePlaylist.sh");
+		if(!shuffle){	
+			shuffle = true;
+			sprintf(npchoices[5],"Shuffle OFF");
+		}
+		else {
+			shuffle = false;
+			sprintf(npchoices[5],"Shuffle ON ");
+		}
 		npchoice =0;
 		goto p;
 	}
 	else if (npchoice == 7)
+	{
+		system("./SavePlaylist.sh");
+		npchoice =0;
+		goto p;
+	}
+	else if (npchoice == 8)
 	{
 		system("killall mpg123 2>/dev/null");
 		clear();

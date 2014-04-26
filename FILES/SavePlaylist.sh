@@ -1,4 +1,4 @@
-cd /home/ayush/Desktop/Music_Player/FILES/Playlists/
+cd /home/ashish/Desktop/Music_Player/FILES/Playlists/
 name=$(zenity --entry --entry-text="Playlist" --title="Like It?" --text="Save Playlist As:")
 name="$name.pl"
-cp /home/ayush/Desktop/Music_Player/FILES/currentplay.pl $name
+cp /home/ashish/Desktop/Music_Player/FILES/currentplay.pl $name
