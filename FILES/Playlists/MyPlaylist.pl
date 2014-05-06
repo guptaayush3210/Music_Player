@@ -25,4 +25,3 @@
 /media/general/Users/Anil/Music/John Mayer/Battle Studies/04 Who Says.mp3
 /media/general/Users/Anil/Music/jason_mraz__i_am_yours.mp3
 /media/general/Users/All Users/Documents/My Music/John Mayer/07. John Mayer - Stop This Train.mp3
-/host/ubuntu/songs/David Guetta - The Alphabeat (Epitome Criminal Remix).wav

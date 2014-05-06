@@ -1,3 +1,16 @@
+/*
+
+FaLiC : Plays True Sound.
+
+Winter Project NSIT 2014.
+Made By:
+Ashish Kothari (240/CO/12)
+Ayush Gupta (248/CO/12)
+Chandan Kar (252/CO/12)
+
+Extra Credits: ZENITY and MPG123 modules.
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
