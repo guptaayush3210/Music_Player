@@ -110,6 +110,7 @@ init_pair(2,COLOR_WHITE,COLOR_BLACK);
 
 wtimeout(menu_win, 500);
 p:
+curs_set(0);
 mvprintw(0, 0, "Use arrow keys to go up and down, Press ENTER to select a song.");
 refresh();
 print_menu(menu_win, highlight, nphighlight,stop_id);

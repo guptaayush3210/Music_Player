@@ -53,6 +53,7 @@ int main()
 		
 	player: menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
+	curs_set(0);
 	attron(COLOR_PAIR(1) | A_BOLD);
 	mvprintw(0, (col-70)/2 , "----- Welcome to Fast & Light Console-based (FaLiC) Media Player -----");
 	attroff(COLOR_PAIR(1) | A_BOLD);

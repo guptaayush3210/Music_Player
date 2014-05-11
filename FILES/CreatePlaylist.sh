@@ -47,7 +47,7 @@ cd /host/ubuntu/songs
 
 
 IFS=%
-list=$(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='%')
+list = $(zenity --file-selection --filename=/host/ubuntu/songs/ --title="Select Files to Play" --multiple --separator='%')
 :>'/home/ayush/Desktop/Music_Player/FILES/currentplay.pl'
 for f in  $list; do
         # songname=`echo "$f" | awk -F"songs/" '{print $2}'`
